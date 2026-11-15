@@ -1,0 +1,29 @@
+name: lerobot main
+
+# The contract tests against lerobot's main branch: an early warning that the next lerobot
+# release renames a flag, changes a default the builders rely on, or adds an RTC policy.
+on:
+  schedule:
+    - cron: '0 3 * * 1' # Mondays 03:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Free disk space
+        run: sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          enable-cache: true
+      - name: Install, then replace lerobot with main
+        run: |
+          uv sync --locked
+          uv pip install "lerobot[all] @ git+https://github.com/huggingface/lerobot.git@main"
+          uv run --no-sync python -c "import importlib.metadata as m; print('lerobot', m.version('lerobot'))"
+      - name: Contract tests
+        run: uv run --no-sync pytest -m lerobot -v

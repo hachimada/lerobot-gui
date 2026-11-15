@@ -1,0 +1,74 @@
+[project]
+name = "lerobot-gui"
+version = "0.1.0"
+description = "Local web GUI that builds and runs LeRobot commands (SO-101): setup, teleoperate, record, train, rollout"
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md"]
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn>=0.30",
+    # `--robot.cameras` is YAML to lerobot: values are quoted unless YAML reads them back unchanged
+    "pyyaml>=6",
+    # the serial ports (the arms' boards) on Linux, macOS and Windows
+    "pyserial>=3.5",
+    # The GUI runs the lerobot CLIs of the environment it is installed in and reads their configs.
+    "lerobot>=0.7",
+]
+
+[project.scripts]
+lerobot-gui = "lerobot_gui:main"
+
+[project.urls]
+Homepage = "https://github.com/hachimada/lerobot-gui"
+Repository = "https://github.com/hachimada/lerobot-gui"
+Issues = "https://github.com/hachimada/lerobot-gui/issues"
+
+[dependency-groups]
+dev = [
+    # The lerobot version the GUI is developed and tested against (CI also runs lerobot main), with
+    # every extra so the contract tests see every robot / policy / camera. Pinned here and not in
+    # [tool.uv.sources]: a workspace that installs the GUI keeps its own lerobot (`lerobot>=0.7`).
+    "lerobot[all] @ git+https://github.com/huggingface/lerobot.git@v0.7.0",
+    "httpx>=0.27",
+    "pytest>=8",
+    "pytest-cov>=5",
+    "ruff>=0.6",
+    "pyright>=1.1.380",
+]
+
+[build-system]
+requires = ["uv_build>=0.12.22,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.uv]
+# system Python lacks Python.h, needed to build evdev (a lerobot[all] dependency)
+python-preference = "only-managed"
+
+[tool.uv.extra-build-variables]
+# egl-probe's CMakeLists requires CMake < 3.5 compat, which CMake 4.x removed
+egl-probe = { CMAKE_POLICY_VERSION_MINIMUM = "3.5" }
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "lerobot: needs lerobot installed (contract tests against the installed lerobot version)",
+]
+addopts = "-ra"
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF"]
+# E501: the formatter wraps code; RUF001: UI texts use typographic characters (×, −, →) on purpose
+ignore = ["E501", "RUF001"]
+
+[tool.pyright]
+include = ["src", "tests"]
+pythonVersion = "3.12"
+typeCheckingMode = "standard"
+reportMissingTypeStubs = false

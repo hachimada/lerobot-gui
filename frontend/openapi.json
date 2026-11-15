@@ -1,0 +1,4038 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "LeRobot GUI",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/": {
+      "get": {
+        "summary": "Index",
+        "operationId": "index__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/accounts": {
+      "get": {
+        "summary": "Accounts Status",
+        "operationId": "accounts_status_api_accounts_get",
+        "parameters": [
+          {
+            "name": "refresh",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Refresh"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Accounts"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/accounts/hf/login": {
+      "post": {
+        "summary": "Hf Login",
+        "description": "Log in with a Hugging Face access token (checked first), as `hf auth login` does.",
+        "operationId": "hf_login_api_accounts_hf_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SecretRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountStatus"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/accounts/hf/logout": {
+      "post": {
+        "summary": "Hf Logout",
+        "description": "Remove the saved Hugging Face tokens, as `hf auth logout` does.",
+        "operationId": "hf_logout_api_accounts_hf_logout_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountStatus"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ports": {
+      "get": {
+        "summary": "Ports",
+        "operationId": "ports_api_ports_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ports"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/discover": {
+      "get": {
+        "summary": "Discover",
+        "description": "Rescan: the ports (as /ports), and how many datasets and training runs a fresh scan found.",
+        "operationId": "discover_api_discover_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Discover"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/captured-images": {
+      "get": {
+        "summary": "Captured Images",
+        "description": "The frames in `dir`, each marked `older` when an earlier run left it. `record_time`: Find\ncameras' --record-time-s as entered.",
+        "operationId": "captured_images_api_captured_images_get",
+        "parameters": [
+          {
+            "name": "dir",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "title": "Dir"
+            }
+          },
+          {
+            "name": "record_time",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Record Time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CapturedImage"
+                  },
+                  "title": "Response Captured Images Api Captured Images Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/captured-images/{name}": {
+      "delete": {
+        "summary": "Delete Captured Image",
+        "description": "Delete one frame (one an earlier run left, which can stay for a long time).",
+        "operationId": "delete_captured_image_api_captured_images__name__delete",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Name"
+            }
+          },
+          {
+            "name": "dir",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "title": "Dir"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ok"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Captured Image",
+        "operationId": "captured_image_api_captured_images__name__get",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Name"
+            }
+          },
+          {
+            "name": "dir",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "title": "Dir"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/environment": {
+      "get": {
+        "summary": "Environment",
+        "operationId": "environment_api_environment_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnvironmentInfo"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/pages": {
+      "get": {
+        "summary": "Pages",
+        "operationId": "pages_api_pages_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Pages"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/form/{page_id}": {
+      "post": {
+        "summary": "Form",
+        "description": "Fields, command line and messages for the values so far (fast: never imports lerobot).",
+        "operationId": "form_api_form__page_id__post",
+        "parameters": [
+          {
+            "name": "page_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Page Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FormRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FormResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/form/{page_id}/options": {
+      "post": {
+        "summary": "Form Options",
+        "description": "The \"All options\" listing for the current values (the first call imports lerobot: seconds).",
+        "operationId": "form_options_api_form__page_id__options_post",
+        "parameters": [
+          {
+            "name": "page_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Page Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FormRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OptionsListing"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/form/{page_id}/run": {
+      "post": {
+        "summary": "Run",
+        "description": "Build the command from the values (exactly as previewed) and start it.",
+        "operationId": "run_api_form__page_id__run_post",
+        "parameters": [
+          {
+            "name": "page_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Page Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RunRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobInfo"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/hardware": {
+      "post": {
+        "summary": "Hardware Form",
+        "description": "Each arm's port and id fields, what is plugged in, the setup status and the Check arms result explained.",
+        "operationId": "hardware_form_api_hardware_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HardwareRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HardwareForm"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/check-arms": {
+      "post": {
+        "summary": "Check Arms",
+        "description": "Check arms for the Hardware values; `remember`: the action that remembers the boards of the arms\nfound on the right port (None when there is none to remember). 409 while a robot command runs.",
+        "operationId": "check_arms_api_check_arms_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArmsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArmCheck"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/hub/models": {
+      "get": {
+        "summary": "Hub Models",
+        "operationId": "hub_models_api_hub_models_get",
+        "parameters": [
+          {
+            "name": "refresh",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Refresh"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HubModels"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/jobs": {
+      "get": {
+        "summary": "List Jobs",
+        "operationId": "list_jobs_api_jobs_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/JobInfo"
+                  },
+                  "type": "array",
+                  "title": "Response List Jobs Api Jobs Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/jobs/{job_id}/input": {
+      "post": {
+        "summary": "Job Input",
+        "operationId": "job_input_api_jobs__job_id__input_post",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Job Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InputRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ok"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/jobs/{job_id}/signal": {
+      "post": {
+        "summary": "Job Signal",
+        "operationId": "job_signal_api_jobs__job_id__signal_post",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Job Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignalRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobInfo"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/jobs/{job_id}/stream": {
+      "get": {
+        "summary": "Job Stream",
+        "description": "Server-sent events: `info` first (and again when a prompt shows up), `data` chunks of output, then `end`.",
+        "operationId": "job_stream_api_jobs__job_id__stream_get",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Job Id"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/presets/{page}": {
+      "get": {
+        "summary": "List Presets",
+        "operationId": "list_presets_api_presets__page__get",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Page"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PresetInfo"
+                  },
+                  "title": "Response List Presets Api Presets  Page  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/presets/{page}/{name}": {
+      "get": {
+        "summary": "Load Preset",
+        "operationId": "load_preset_api_presets__page___name__get",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Page"
+            }
+          },
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Name"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Preset"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Save Preset",
+        "operationId": "save_preset_api_presets__page___name__put",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Page"
+            }
+          },
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Name"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Preset"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Preset",
+        "operationId": "delete_preset_api_presets__page___name__delete",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Page"
+            }
+          },
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Name"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PresetInfo"
+                  },
+                  "title": "Response Delete Preset Api Presets  Page   Name  Delete"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/hf/local": {
+      "get": {
+        "summary": "Hf Local",
+        "operationId": "hf_local_api_hf_local_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HfLocal"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/hf/local/delete": {
+      "post": {
+        "summary": "Hf Local Delete",
+        "operationId": "hf_local_delete_api_hf_local_delete_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HfLocal"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/hf/cloud": {
+      "get": {
+        "summary": "Hf Cloud",
+        "operationId": "hf_cloud_api_hf_cloud_get",
+        "parameters": [
+          {
+            "name": "refresh",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Refresh"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HfCloud"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AccountStatus": {
+        "properties": {
+          "logged_in": {
+            "type": "boolean",
+            "title": "Logged In"
+          },
+          "user": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User"
+          },
+          "orgs": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Orgs"
+          },
+          "token_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Token Name"
+          },
+          "token_role": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Token Role"
+          },
+          "error": {
+            "type": "string",
+            "title": "Error"
+          },
+          "where": {
+            "type": "string",
+            "title": "Where",
+            "description": "where the login comes from"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "logged_in"
+        ],
+        "title": "AccountStatus"
+      },
+      "Accounts": {
+        "properties": {
+          "hf": {
+            "$ref": "#/components/schemas/AccountStatus"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "hf"
+        ],
+        "title": "Accounts"
+      },
+      "Also": {
+        "properties": {
+          "values": {
+            "additionalProperties": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "object",
+            "title": "Values"
+          },
+          "other": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Other"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "values",
+          "other"
+        ],
+        "title": "Also",
+        "description": "Values stored along with a field's: `values[v]` for the value `v`, else `other`."
+      },
+      "ArmCheck": {
+        "properties": {
+          "arms": {
+            "items": {
+              "$ref": "#/components/schemas/ArmResult"
+            },
+            "type": "array",
+            "title": "Arms"
+          },
+          "swapped": {
+            "type": "boolean",
+            "title": "Swapped"
+          },
+          "remember": {
+            "anyOf": [
+              {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/GoAction"
+                  },
+                  {
+                    "$ref": "#/components/schemas/SetAction"
+                  },
+                  {
+                    "$ref": "#/components/schemas/HardwareAction"
+                  },
+                  {
+                    "$ref": "#/components/schemas/CheckArmsAction"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ScrollAction"
+                  },
+                  {
+                    "$ref": "#/components/schemas/RunForceAction"
+                  }
+                ],
+                "discriminator": {
+                  "propertyName": "type",
+                  "mapping": {
+                    "check_arms": "#/components/schemas/CheckArmsAction",
+                    "go": "#/components/schemas/GoAction",
+                    "hardware": "#/components/schemas/HardwareAction",
+                    "run_force": "#/components/schemas/RunForceAction",
+                    "scroll": "#/components/schemas/ScrollAction",
+                    "set": "#/components/schemas/SetAction"
+                  }
+                }
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Remember",
+            "description": "Check arms only: remembers the boards of the arms found on the right port"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "arms",
+          "swapped"
+        ],
+        "title": "ArmCheck",
+        "description": "What the arms' motors hold, compared with the calibration files."
+      },
+      "ArmGuide": {
+        "properties": {
+          "level": {
+            "type": "string",
+            "enum": [
+              "ok",
+              "warn",
+              "err"
+            ],
+            "title": "Level"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "text": {
+            "type": "string",
+            "title": "Text"
+          },
+          "steps": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Steps"
+          },
+          "actions": {
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/GoAction"
+                },
+                {
+                  "$ref": "#/components/schemas/SetAction"
+                },
+                {
+                  "$ref": "#/components/schemas/HardwareAction"
+                },
+                {
+                  "$ref": "#/components/schemas/CheckArmsAction"
+                },
+                {
+                  "$ref": "#/components/schemas/ScrollAction"
+                },
+                {
+                  "$ref": "#/components/schemas/RunForceAction"
+                }
+              ],
+              "discriminator": {
+                "propertyName": "type",
+                "mapping": {
+                  "check_arms": "#/components/schemas/CheckArmsAction",
+                  "go": "#/components/schemas/GoAction",
+                  "hardware": "#/components/schemas/HardwareAction",
+                  "run_force": "#/components/schemas/RunForceAction",
+                  "scroll": "#/components/schemas/ScrollAction",
+                  "set": "#/components/schemas/SetAction"
+                }
+              }
+            },
+            "type": "array",
+            "title": "Actions"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "level",
+          "title",
+          "text"
+        ],
+        "title": "ArmGuide",
+        "description": "What a Check arms result means and what to do about it."
+      },
+      "ArmResult": {
+        "properties": {
+          "role": {
+            "type": "string",
+            "title": "Role"
+          },
+          "port": {
+            "type": "string",
+            "title": "Port"
+          },
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "file": {
+            "type": "string",
+            "title": "File",
+            "description": "its calibration file"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ok",
+              "other",
+              "mismatch",
+              "no_file",
+              "error"
+            ],
+            "title": "Status"
+          },
+          "detail": {
+            "type": "string",
+            "title": "Detail"
+          },
+          "other_role": {
+            "type": "string",
+            "title": "Other Role",
+            "description": "other: the arm whose calibration the motors hold"
+          },
+          "other_id": {
+            "type": "string",
+            "title": "Other Id"
+          },
+          "guide": {
+            "$ref": "#/components/schemas/ArmGuide",
+            "description": "on the Hardware page"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "role",
+          "port",
+          "id",
+          "file",
+          "status",
+          "detail"
+        ],
+        "title": "ArmResult"
+      },
+      "ArmsRequest": {
+        "properties": {
+          "hardware": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Hardware",
+            "default": {}
+          }
+        },
+        "type": "object",
+        "title": "ArmsRequest"
+      },
+      "Cache": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Path"
+          },
+          "size": {
+            "type": "integer",
+            "title": "Size"
+          },
+          "repos": {
+            "items": {
+              "$ref": "#/components/schemas/CachedRepo"
+            },
+            "type": "array",
+            "title": "Repos"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name",
+          "path",
+          "size",
+          "repos",
+          "error"
+        ],
+        "title": "Cache"
+      },
+      "CachedRepo": {
+        "properties": {
+          "repo_id": {
+            "type": "string",
+            "title": "Repo Id"
+          },
+          "repo_type": {
+            "type": "string",
+            "title": "Repo Type"
+          },
+          "size": {
+            "type": "integer",
+            "title": "Size"
+          },
+          "files": {
+            "type": "integer",
+            "title": "Files"
+          },
+          "revisions": {
+            "type": "integer",
+            "title": "Revisions"
+          },
+          "last_accessed": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Accessed"
+          },
+          "last_modified": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Modified"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "repo_id",
+          "repo_type",
+          "size",
+          "files",
+          "revisions",
+          "last_accessed",
+          "last_modified"
+        ],
+        "title": "CachedRepo"
+      },
+      "CalibrationFile": {
+        "properties": {
+          "class": {
+            "type": "string",
+            "title": "Class"
+          },
+          "id": {
+            "type": "string",
+            "title": "Id"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "class",
+          "id"
+        ],
+        "title": "CalibrationFile"
+      },
+      "CalibrationPrompt": {
+        "properties": {
+          "role": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Role",
+            "description": "the arm whose id is in the prompt; None when both arms have that id"
+          },
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "port": {
+            "type": "string",
+            "title": "Port"
+          },
+          "mismatch": {
+            "type": "boolean",
+            "title": "Mismatch"
+          },
+          "warning": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Warning"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "role",
+          "id",
+          "port",
+          "mismatch",
+          "warning"
+        ],
+        "title": "CalibrationPrompt",
+        "description": "lerobot waits at its \"use the calibration file?\" prompt."
+      },
+      "Calibrations": {
+        "properties": {
+          "robots": {
+            "items": {
+              "$ref": "#/components/schemas/CalibrationFile"
+            },
+            "type": "array",
+            "title": "Robots"
+          },
+          "teleoperators": {
+            "items": {
+              "$ref": "#/components/schemas/CalibrationFile"
+            },
+            "type": "array",
+            "title": "Teleoperators"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "robots",
+          "teleoperators"
+        ],
+        "title": "Calibrations",
+        "description": "The calibration files lerobot keeps, by kind."
+      },
+      "CapturedImage": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Type"
+          },
+          "device": {
+            "type": "string",
+            "title": "Device"
+          },
+          "mtime": {
+            "type": "number",
+            "title": "Mtime"
+          },
+          "width": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Width",
+            "description": "the frame's size, offered as the camera's width and height"
+          },
+          "height": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Height"
+          },
+          "older": {
+            "type": "boolean",
+            "title": "Older",
+            "description": "left by an earlier Find cameras run, not the last capture's"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name",
+          "type",
+          "device",
+          "mtime",
+          "width",
+          "height"
+        ],
+        "title": "CapturedImage"
+      },
+      "CheckArmsAction": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "check_arms",
+            "title": "Type"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "type",
+          "label"
+        ],
+        "title": "CheckArmsAction",
+        "description": "Run Check arms on the Hardware page."
+      },
+      "CommandLine": {
+        "properties": {
+          "exe": {
+            "type": "string",
+            "title": "Exe"
+          },
+          "args": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Args"
+          },
+          "preview": {
+            "type": "string",
+            "title": "Preview",
+            "description": "as a shell would show it"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "exe",
+          "args",
+          "preview"
+        ],
+        "title": "CommandLine"
+      },
+      "DeleteRequest": {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "title": "Kind"
+          },
+          "repo_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Repo Id"
+          },
+          "repo_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Repo Type"
+          },
+          "cache": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cache"
+          },
+          "calibration_kind": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Calibration Kind"
+          },
+          "cls": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cls"
+          },
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "kind"
+        ],
+        "title": "DeleteRequest"
+      },
+      "Discover": {
+        "properties": {
+          "ports": {
+            "items": {
+              "$ref": "#/components/schemas/Port"
+            },
+            "type": "array",
+            "title": "Ports"
+          },
+          "calibrations": {
+            "$ref": "#/components/schemas/Calibrations"
+          },
+          "datasets": {
+            "type": "integer",
+            "title": "Datasets"
+          },
+          "policies": {
+            "type": "integer",
+            "title": "Policies"
+          },
+          "local": {
+            "$ref": "#/components/schemas/LocalNames",
+            "description": "names found on disk"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "ports",
+          "calibrations",
+          "datasets",
+          "policies",
+          "local"
+        ],
+        "title": "Discover",
+        "description": "A rescan: the ports, and how many datasets and training runs were found."
+      },
+      "EnvironmentInfo": {
+        "properties": {
+          "locations": {
+            "items": {
+              "$ref": "#/components/schemas/Location"
+            },
+            "type": "array",
+            "title": "Locations"
+          },
+          "variables": {
+            "items": {
+              "$ref": "#/components/schemas/Variable"
+            },
+            "type": "array",
+            "title": "Variables"
+          },
+          "runtime": {
+            "items": {
+              "$ref": "#/components/schemas/NameValue"
+            },
+            "type": "array",
+            "title": "Runtime"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "locations",
+          "variables",
+          "runtime"
+        ],
+        "title": "EnvironmentInfo",
+        "description": "The environment the commands run in."
+      },
+      "FieldSpec": {
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Key"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "text",
+              "number",
+              "bool",
+              "toggle",
+              "choice",
+              "seg",
+              "picker"
+            ],
+            "title": "Kind"
+          },
+          "gui": {
+            "type": "boolean",
+            "title": "Gui",
+            "description": "a choice of the GUI itself (always has a value), not a lerobot flag"
+          },
+          "flag": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Flag",
+            "description": "shown next to the label"
+          },
+          "value": {
+            "title": "Value",
+            "description": "the value entered (None: none), or the GUI choice"
+          },
+          "default": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Default",
+            "description": "lerobot's default (read from the installed lerobot), or the GUI choice's default"
+          },
+          "required": {
+            "type": "boolean",
+            "title": "Required"
+          },
+          "options": {
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Option"
+                },
+                {
+                  "$ref": "#/components/schemas/OptionGroup"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Options"
+          },
+          "help": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Help"
+          },
+          "placeholder": {
+            "type": "string",
+            "title": "Placeholder",
+            "description": "an example, when lerobot has no default to show"
+          },
+          "custom": {
+            "type": "boolean",
+            "title": "Custom",
+            "description": "choice: also takes a typed value"
+          },
+          "hub": {
+            "type": "boolean",
+            "title": "Hub",
+            "description": "picker: models on the Hugging Face Hub are offered too"
+          },
+          "mono": {
+            "type": "boolean",
+            "title": "Mono"
+          },
+          "half": {
+            "type": "boolean",
+            "title": "Half"
+          },
+          "advanced": {
+            "type": "boolean",
+            "title": "Advanced"
+          },
+          "suggest": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Suggest",
+            "description": "values offered as one-click chips"
+          },
+          "also": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Also"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "values stored along with the field's (a Hardware port: the board on it)"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "key",
+          "label",
+          "kind",
+          "gui",
+          "flag",
+          "value",
+          "default",
+          "required",
+          "options",
+          "help",
+          "placeholder",
+          "custom",
+          "hub",
+          "mono",
+          "half",
+          "advanced",
+          "suggest",
+          "also"
+        ],
+        "title": "FieldSpec",
+        "description": "One lerobot flag (key = the flag without `--`), or a choice of the GUI itself (`gui`, key `gui.*`). A flag\ngoes into the command only when it has a value; empty means lerobot's default."
+      },
+      "FindPortResult": {
+        "properties": {
+          "tty": {
+            "type": "string",
+            "title": "Tty"
+          },
+          "by_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "By Id"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "tty",
+          "by_id"
+        ],
+        "title": "FindPortResult"
+      },
+      "FormRequest": {
+        "properties": {
+          "values": {
+            "additionalProperties": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "object",
+            "title": "Values",
+            "default": {}
+          },
+          "preflight": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ArmCheck"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "title": "FormRequest"
+      },
+      "FormResponse": {
+        "properties": {
+          "page": {
+            "type": "string",
+            "title": "Page"
+          },
+          "groups": {
+            "items": {
+              "$ref": "#/components/schemas/GroupSpec"
+            },
+            "type": "array",
+            "title": "Groups"
+          },
+          "values": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Values"
+          },
+          "hardware_summary": {
+            "items": {
+              "$ref": "#/components/schemas/SummaryChip"
+            },
+            "type": "array",
+            "title": "Hardware Summary",
+            "description": "the arms and cameras the command uses"
+          },
+          "command": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CommandLine"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "messages": {
+            "items": {
+              "$ref": "#/components/schemas/Message"
+            },
+            "type": "array",
+            "title": "Messages"
+          },
+          "errors": {
+            "type": "integer",
+            "title": "Errors"
+          },
+          "options_query": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/OptionsQuery"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "listing_ready": {
+            "type": "boolean",
+            "title": "Listing Ready",
+            "description": "lerobot's defaults and choices are known (its options were listed)"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "page",
+          "groups",
+          "values",
+          "hardware_summary",
+          "command",
+          "messages",
+          "errors",
+          "options_query",
+          "listing_ready"
+        ],
+        "title": "FormResponse"
+      },
+      "GoAction": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "go",
+            "title": "Type"
+          },
+          "page": {
+            "type": "string",
+            "title": "Page"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "type",
+          "page",
+          "label"
+        ],
+        "title": "GoAction",
+        "description": "Open a page."
+      },
+      "GroupSpec": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "fields": {
+            "items": {
+              "$ref": "#/components/schemas/FieldSpec"
+            },
+            "type": "array",
+            "title": "Fields"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "title",
+          "fields"
+        ],
+        "title": "GroupSpec"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "HardwareAction": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "hardware",
+            "title": "Type"
+          },
+          "values": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Values"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "toast": {
+            "type": "string",
+            "title": "Toast",
+            "description": "said once the values are set"
+          },
+          "keep_check": {
+            "type": "boolean",
+            "title": "Keep Check",
+            "description": "the Check arms result stays (the change doesn't move an arm)"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "type",
+          "values",
+          "label"
+        ],
+        "title": "HardwareAction",
+        "description": "Change Hardware values (None clears one). The Check arms result goes, unless `keep_check`."
+      },
+      "HardwareForm": {
+        "properties": {
+          "groups": {
+            "items": {
+              "$ref": "#/components/schemas/GroupSpec"
+            },
+            "type": "array",
+            "title": "Groups"
+          },
+          "view": {
+            "$ref": "#/components/schemas/HardwareView"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "groups",
+          "view"
+        ],
+        "title": "HardwareForm",
+        "description": "The Hardware page: each arm's port and calibration id, and everything else it shows."
+      },
+      "HardwareRequest": {
+        "properties": {
+          "hardware": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Hardware",
+            "default": {}
+          },
+          "arm_check": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ArmCheck"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "title": "HardwareRequest"
+      },
+      "HardwareView": {
+        "properties": {
+          "roles": {
+            "items": {
+              "$ref": "#/components/schemas/Role"
+            },
+            "type": "array",
+            "title": "Roles"
+          },
+          "ttys": {
+            "items": {
+              "$ref": "#/components/schemas/Tty"
+            },
+            "type": "array",
+            "title": "Ttys"
+          },
+          "camera_names": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Camera Names",
+            "description": "names offered: the ones the trained policies and datasets expect"
+          },
+          "status": {
+            "items": {
+              "$ref": "#/components/schemas/StatusItem"
+            },
+            "type": "array",
+            "title": "Status"
+          },
+          "arm_check": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ArmCheck"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "arm_explain": {
+            "type": "string",
+            "title": "Arm Explain"
+          },
+          "calibrations": {
+            "$ref": "#/components/schemas/Calibrations"
+          },
+          "camera_types": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Camera Types",
+            "description": "the camera types of the installed lerobot"
+          },
+          "camera_fields": {
+            "additionalProperties": {
+              "items": {
+                "$ref": "#/components/schemas/FieldSpec"
+              },
+              "type": "array"
+            },
+            "type": "object",
+            "title": "Camera Fields",
+            "description": "each type's settings"
+          },
+          "camera_device_field": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "type": "object",
+            "title": "Camera Device Field",
+            "description": "each type's setting naming the device"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "roles",
+          "ttys",
+          "camera_names",
+          "status",
+          "arm_check",
+          "arm_explain",
+          "calibrations",
+          "camera_types",
+          "camera_fields",
+          "camera_device_field"
+        ],
+        "title": "HardwareView",
+        "description": "Everything the Hardware page shows besides its fields."
+      },
+      "HfCloud": {
+        "properties": {
+          "logged_in": {
+            "type": "boolean",
+            "title": "Logged In"
+          },
+          "owners": {
+            "items": {
+              "$ref": "#/components/schemas/Owner"
+            },
+            "type": "array",
+            "title": "Owners"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "logged_in",
+          "owners"
+        ],
+        "title": "HfCloud",
+        "description": "The account's and its organizations' datasets and models on the Hub."
+      },
+      "HfLocal": {
+        "properties": {
+          "home": {
+            "type": "string",
+            "title": "Home"
+          },
+          "datasets": {
+            "items": {
+              "$ref": "#/components/schemas/LocalDataset"
+            },
+            "type": "array",
+            "title": "Datasets"
+          },
+          "calibrations": {
+            "items": {
+              "$ref": "#/components/schemas/LocalCalibration"
+            },
+            "type": "array",
+            "title": "Calibrations"
+          },
+          "caches": {
+            "items": {
+              "$ref": "#/components/schemas/Cache"
+            },
+            "type": "array",
+            "title": "Caches"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "after a delete"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "home",
+          "datasets",
+          "calibrations",
+          "caches"
+        ],
+        "title": "HfLocal",
+        "description": "What lerobot and huggingface_hub keep on this computer."
+      },
+      "HubModel": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "downloads": {
+            "type": "integer",
+            "title": "Downloads"
+          },
+          "likes": {
+            "type": "integer",
+            "title": "Likes"
+          },
+          "created": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created"
+          },
+          "private": {
+            "type": "boolean",
+            "title": "Private"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "downloads",
+          "likes",
+          "created",
+          "private"
+        ],
+        "title": "HubModel"
+      },
+      "HubModelGroup": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "author": {
+            "type": "string",
+            "title": "Author"
+          },
+          "models": {
+            "items": {
+              "$ref": "#/components/schemas/HubModel"
+            },
+            "type": "array",
+            "title": "Models"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "title",
+          "author",
+          "models"
+        ],
+        "title": "HubModelGroup"
+      },
+      "HubModels": {
+        "properties": {
+          "groups": {
+            "items": {
+              "$ref": "#/components/schemas/HubModelGroup"
+            },
+            "type": "array",
+            "title": "Groups"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "groups",
+          "error"
+        ],
+        "title": "HubModels"
+      },
+      "HubRepo": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "private": {
+            "type": "boolean",
+            "title": "Private"
+          },
+          "downloads": {
+            "type": "integer",
+            "title": "Downloads"
+          },
+          "likes": {
+            "type": "integer",
+            "title": "Likes"
+          },
+          "updated": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated"
+          },
+          "url": {
+            "type": "string",
+            "title": "Url"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "private",
+          "downloads",
+          "likes",
+          "updated",
+          "url"
+        ],
+        "title": "HubRepo"
+      },
+      "InputRequest": {
+        "properties": {
+          "text": {
+            "type": "string",
+            "title": "Text",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "title": "InputRequest"
+      },
+      "JobInfo": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "command": {
+            "type": "string",
+            "title": "Command"
+          },
+          "page": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Page"
+          },
+          "args": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Args"
+          },
+          "hardware": {
+            "type": "boolean",
+            "title": "Hardware"
+          },
+          "started": {
+            "type": "number",
+            "title": "Started"
+          },
+          "ended": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ended"
+          },
+          "running": {
+            "type": "boolean",
+            "title": "Running"
+          },
+          "returncode": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Returncode"
+          },
+          "stop_requested": {
+            "type": "boolean",
+            "title": "Stop Requested"
+          },
+          "preflight": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ArmCheck"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "the arm check before it started"
+          },
+          "preflight_notes": {
+            "items": {
+              "$ref": "#/components/schemas/Note"
+            },
+            "type": "array",
+            "title": "Preflight Notes"
+          },
+          "failure": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Failure",
+            "description": "why it failed (not for a Stop)"
+          },
+          "prompt": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CalibrationPrompt"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "phase": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "scan",
+                  "unplug",
+                  "reported"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phase",
+            "description": "lerobot-find-port: where it is"
+          },
+          "find_port": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/FindPortResult"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "lerobot-find-port: the port it reported"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "command",
+          "page",
+          "args",
+          "hardware",
+          "started",
+          "ended",
+          "running",
+          "returncode",
+          "stop_requested",
+          "preflight",
+          "preflight_notes",
+          "failure",
+          "prompt",
+          "phase",
+          "find_port"
+        ],
+        "title": "JobInfo"
+      },
+      "LocalCalibration": {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "title": "Kind"
+          },
+          "class": {
+            "type": "string",
+            "title": "Class"
+          },
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "path": {
+            "type": "string",
+            "title": "Path"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "kind",
+          "class",
+          "id",
+          "path"
+        ],
+        "title": "LocalCalibration"
+      },
+      "LocalDataset": {
+        "properties": {
+          "repo_id": {
+            "type": "string",
+            "title": "Repo Id"
+          },
+          "path": {
+            "type": "string",
+            "title": "Path"
+          },
+          "fps": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fps"
+          },
+          "episodes": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Episodes"
+          },
+          "frames": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Frames"
+          },
+          "robot_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Robot Type"
+          },
+          "cameras": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Cameras"
+          },
+          "tasks": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Tasks"
+          },
+          "mtime": {
+            "type": "number",
+            "title": "Mtime"
+          },
+          "size": {
+            "type": "integer",
+            "title": "Size"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "repo_id",
+          "path",
+          "fps",
+          "episodes",
+          "frames",
+          "robot_type",
+          "cameras",
+          "tasks",
+          "mtime",
+          "size"
+        ],
+        "title": "LocalDataset"
+      },
+      "LocalNames": {
+        "properties": {
+          "hf_namespaces": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Hf Namespaces"
+          },
+          "trackio_projects": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Trackio Projects"
+          },
+          "trackio_spaces": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Trackio Spaces"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "hf_namespaces",
+          "trackio_projects",
+          "trackio_spaces"
+        ],
+        "title": "LocalNames",
+        "description": "Dataset / model namespaces and Trackio projects and Spaces found on disk."
+      },
+      "Location": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Value"
+          },
+          "read_from": {
+            "type": "string",
+            "title": "Read From"
+          },
+          "from_env": {
+            "type": "boolean",
+            "title": "From Env"
+          },
+          "error": {
+            "type": "string",
+            "title": "Error"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "title": "Location"
+      },
+      "Message": {
+        "properties": {
+          "level": {
+            "type": "string",
+            "enum": [
+              "err",
+              "warn",
+              "info"
+            ],
+            "title": "Level"
+          },
+          "text": {
+            "type": "string",
+            "title": "Text"
+          },
+          "actions": {
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/GoAction"
+                },
+                {
+                  "$ref": "#/components/schemas/SetAction"
+                },
+                {
+                  "$ref": "#/components/schemas/HardwareAction"
+                },
+                {
+                  "$ref": "#/components/schemas/CheckArmsAction"
+                },
+                {
+                  "$ref": "#/components/schemas/ScrollAction"
+                },
+                {
+                  "$ref": "#/components/schemas/RunForceAction"
+                }
+              ],
+              "discriminator": {
+                "propertyName": "type",
+                "mapping": {
+                  "check_arms": "#/components/schemas/CheckArmsAction",
+                  "go": "#/components/schemas/GoAction",
+                  "hardware": "#/components/schemas/HardwareAction",
+                  "run_force": "#/components/schemas/RunForceAction",
+                  "scroll": "#/components/schemas/ScrollAction",
+                  "set": "#/components/schemas/SetAction"
+                }
+              }
+            },
+            "type": "array",
+            "title": "Actions"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "level",
+          "text",
+          "actions"
+        ],
+        "title": "Message"
+      },
+      "NameValue": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Value"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name",
+          "value"
+        ],
+        "title": "NameValue"
+      },
+      "Note": {
+        "properties": {
+          "level": {
+            "type": "string",
+            "enum": [
+              "err",
+              "warn",
+              "info"
+            ],
+            "title": "Level"
+          },
+          "text": {
+            "type": "string",
+            "title": "Text"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "level",
+          "text"
+        ],
+        "title": "Note"
+      },
+      "Ok": {
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "title": "Ok"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "ok"
+        ],
+        "title": "Ok"
+      },
+      "Option": {
+        "properties": {
+          "value": {
+            "type": "string",
+            "title": "Value"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "disabled": {
+            "type": "boolean",
+            "title": "Disabled"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "value",
+          "label",
+          "disabled",
+          "title"
+        ],
+        "title": "Option"
+      },
+      "OptionGroup": {
+        "properties": {
+          "group": {
+            "type": "string",
+            "title": "Group"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/Option"
+            },
+            "type": "array",
+            "title": "Items"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "group",
+          "items"
+        ],
+        "title": "OptionGroup"
+      },
+      "OptionInfo": {
+        "properties": {
+          "flag": {
+            "type": "string",
+            "title": "Flag"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "bool",
+              "int",
+              "float",
+              "str",
+              "json",
+              "enum",
+              "choice"
+            ],
+            "title": "Kind"
+          },
+          "choices": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Choices"
+          },
+          "default": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Default"
+          },
+          "selected": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Selected",
+            "description": "a choice type: the one selected"
+          },
+          "required": {
+            "type": "boolean",
+            "title": "Required"
+          },
+          "optional": {
+            "type": "boolean",
+            "title": "Optional"
+          },
+          "type": {
+            "type": "string",
+            "title": "Type"
+          },
+          "help": {
+            "type": "string",
+            "title": "Help"
+          },
+          "positional": {
+            "type": "boolean",
+            "title": "Positional",
+            "description": "an argparse command's positional argument (not `--flag=value`)"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "flag",
+          "kind",
+          "choices",
+          "default",
+          "optional",
+          "help"
+        ],
+        "title": "OptionInfo",
+        "description": "One option of a command, as the installed lerobot lists it."
+      },
+      "OptionsListing": {
+        "properties": {
+          "options": {
+            "items": {
+              "$ref": "#/components/schemas/OptionInfo"
+            },
+            "type": "array",
+            "title": "Options"
+          },
+          "errors": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Errors"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "options",
+          "errors"
+        ],
+        "title": "OptionsListing"
+      },
+      "OptionsQuery": {
+        "properties": {
+          "command": {
+            "type": "string",
+            "title": "Command"
+          },
+          "selections": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Selections"
+          },
+          "policy_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Policy Path"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "command",
+          "selections",
+          "policy_path"
+        ],
+        "title": "OptionsQuery",
+        "description": "Which `--help` options apply: the selected choice types and the policy to read defaults from."
+      },
+      "Owner": {
+        "properties": {
+          "owner": {
+            "type": "string",
+            "title": "Owner"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "user",
+              "org"
+            ],
+            "title": "Kind"
+          },
+          "datasets": {
+            "items": {
+              "$ref": "#/components/schemas/HubRepo"
+            },
+            "type": "array",
+            "title": "Datasets"
+          },
+          "models": {
+            "items": {
+              "$ref": "#/components/schemas/HubRepo"
+            },
+            "type": "array",
+            "title": "Models"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "owner",
+          "kind",
+          "datasets",
+          "models",
+          "error"
+        ],
+        "title": "Owner"
+      },
+      "PageMeta": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "icon": {
+            "type": "string",
+            "title": "Icon"
+          },
+          "nav": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nav",
+            "description": "the sidebar section (None: not in the sidebar)"
+          },
+          "exe": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Exe",
+            "description": "the command it runs"
+          },
+          "desc": {
+            "type": "string",
+            "title": "Desc"
+          },
+          "hints": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Hints"
+          },
+          "hardware": {
+            "type": "boolean",
+            "title": "Hardware",
+            "description": "its command uses the robot or the cameras (one such command runs at a time)"
+          },
+          "presets": {
+            "type": "boolean",
+            "title": "Presets",
+            "description": "its values can be saved under a name"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "icon",
+          "nav",
+          "exe",
+          "desc",
+          "hints",
+          "hardware",
+          "presets"
+        ],
+        "title": "PageMeta"
+      },
+      "Pages": {
+        "properties": {
+          "pages": {
+            "items": {
+              "$ref": "#/components/schemas/PageMeta"
+            },
+            "type": "array",
+            "title": "Pages"
+          },
+          "nav": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Nav",
+            "description": "the sidebar sections, in order"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "pages",
+          "nav"
+        ],
+        "title": "Pages"
+      },
+      "Port": {
+        "properties": {
+          "tty": {
+            "type": "string",
+            "title": "Tty"
+          },
+          "aliases": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Aliases"
+          },
+          "board": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Board"
+          },
+          "serial": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Serial"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "tty",
+          "aliases",
+          "board",
+          "serial"
+        ],
+        "title": "Port",
+        "description": "A serial port: its name as lerobot-find-port reports it, its other names, the board on it (its identity) and\nthe board's serial."
+      },
+      "Ports": {
+        "properties": {
+          "ports": {
+            "items": {
+              "$ref": "#/components/schemas/Port"
+            },
+            "type": "array",
+            "title": "Ports"
+          },
+          "calibrations": {
+            "$ref": "#/components/schemas/Calibrations"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "ports",
+          "calibrations"
+        ],
+        "title": "Ports"
+      },
+      "Preset": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "saved": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Saved"
+          },
+          "values": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Values"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name",
+          "saved",
+          "values"
+        ],
+        "title": "Preset",
+        "description": "A command page's values saved under a name."
+      },
+      "PresetInfo": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "saved": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Saved"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count",
+            "description": "how many values it sets"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name",
+          "saved",
+          "count"
+        ],
+        "title": "PresetInfo"
+      },
+      "Role": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name",
+          "label"
+        ],
+        "title": "Role",
+        "description": "An arm: follower or leader."
+      },
+      "RunForceAction": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "run_force",
+            "title": "Type"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "confirm": {
+            "type": "string",
+            "title": "Confirm",
+            "description": "asked before"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "type",
+          "label"
+        ],
+        "title": "RunForceAction",
+        "description": "Run again without the swapped-arms check."
+      },
+      "RunRequest": {
+        "properties": {
+          "values": {
+            "additionalProperties": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "object",
+            "title": "Values",
+            "default": {}
+          },
+          "force": {
+            "type": "boolean",
+            "title": "Force",
+            "default": false
+          }
+        },
+        "type": "object",
+        "title": "RunRequest"
+      },
+      "SaveRequest": {
+        "properties": {
+          "values": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Values"
+          }
+        },
+        "type": "object",
+        "required": [
+          "values"
+        ],
+        "title": "SaveRequest"
+      },
+      "ScrollAction": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "scroll",
+            "title": "Type"
+          },
+          "target": {
+            "type": "string",
+            "title": "Target",
+            "description": "the card's element id"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "type",
+          "target",
+          "label"
+        ],
+        "title": "ScrollAction",
+        "description": "Bring a card of the current page into view."
+      },
+      "SecretRequest": {
+        "properties": {
+          "secret": {
+            "type": "string",
+            "title": "Secret",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "title": "SecretRequest"
+      },
+      "SetAction": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "set",
+            "title": "Type"
+          },
+          "page": {
+            "type": "string",
+            "title": "Page"
+          },
+          "values": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Values"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "go": {
+            "type": "string",
+            "title": "Go",
+            "description": "the page opened then"
+          },
+          "toast": {
+            "type": "string",
+            "title": "Toast",
+            "description": "said once the values are set"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "type",
+          "page",
+          "values",
+          "label"
+        ],
+        "title": "SetAction",
+        "description": "Change a page's values (None clears one)."
+      },
+      "SignalRequest": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "default": "INT"
+          }
+        },
+        "type": "object",
+        "title": "SignalRequest"
+      },
+      "StatusItem": {
+        "properties": {
+          "level": {
+            "type": "string",
+            "enum": [
+              "ok",
+              "warn",
+              "err",
+              "todo"
+            ],
+            "title": "Level"
+          },
+          "text": {
+            "type": "string",
+            "title": "Text"
+          },
+          "actions": {
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/GoAction"
+                },
+                {
+                  "$ref": "#/components/schemas/SetAction"
+                },
+                {
+                  "$ref": "#/components/schemas/HardwareAction"
+                },
+                {
+                  "$ref": "#/components/schemas/CheckArmsAction"
+                },
+                {
+                  "$ref": "#/components/schemas/ScrollAction"
+                },
+                {
+                  "$ref": "#/components/schemas/RunForceAction"
+                }
+              ],
+              "discriminator": {
+                "propertyName": "type",
+                "mapping": {
+                  "check_arms": "#/components/schemas/CheckArmsAction",
+                  "go": "#/components/schemas/GoAction",
+                  "hardware": "#/components/schemas/HardwareAction",
+                  "run_force": "#/components/schemas/RunForceAction",
+                  "scroll": "#/components/schemas/ScrollAction",
+                  "set": "#/components/schemas/SetAction"
+                }
+              }
+            },
+            "type": "array",
+            "title": "Actions"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "level",
+          "text",
+          "actions"
+        ],
+        "title": "StatusItem"
+      },
+      "SummaryChip": {
+        "properties": {
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "value": {
+            "type": "string",
+            "title": "Value"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "label",
+          "value"
+        ],
+        "title": "SummaryChip"
+      },
+      "Tty": {
+        "properties": {
+          "tty": {
+            "type": "string",
+            "title": "Tty"
+          },
+          "board": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Board"
+          },
+          "serial": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Serial"
+          },
+          "roles": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Roles",
+            "description": "the arms on it"
+          },
+          "assign": {
+            "additionalProperties": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/GoAction"
+                },
+                {
+                  "$ref": "#/components/schemas/SetAction"
+                },
+                {
+                  "$ref": "#/components/schemas/HardwareAction"
+                },
+                {
+                  "$ref": "#/components/schemas/CheckArmsAction"
+                },
+                {
+                  "$ref": "#/components/schemas/ScrollAction"
+                },
+                {
+                  "$ref": "#/components/schemas/RunForceAction"
+                }
+              ],
+              "discriminator": {
+                "propertyName": "type",
+                "mapping": {
+                  "check_arms": "#/components/schemas/CheckArmsAction",
+                  "go": "#/components/schemas/GoAction",
+                  "hardware": "#/components/schemas/HardwareAction",
+                  "run_force": "#/components/schemas/RunForceAction",
+                  "scroll": "#/components/schemas/ScrollAction",
+                  "set": "#/components/schemas/SetAction"
+                }
+              }
+            },
+            "type": "object",
+            "title": "Assign",
+            "description": "arm -> putting it on this port (the other arm, if it is here, gets its port)"
+          },
+          "confirm": {
+            "additionalProperties": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/GoAction"
+                },
+                {
+                  "$ref": "#/components/schemas/SetAction"
+                },
+                {
+                  "$ref": "#/components/schemas/HardwareAction"
+                },
+                {
+                  "$ref": "#/components/schemas/CheckArmsAction"
+                },
+                {
+                  "$ref": "#/components/schemas/ScrollAction"
+                },
+                {
+                  "$ref": "#/components/schemas/RunForceAction"
+                }
+              ],
+              "discriminator": {
+                "propertyName": "type",
+                "mapping": {
+                  "check_arms": "#/components/schemas/CheckArmsAction",
+                  "go": "#/components/schemas/GoAction",
+                  "hardware": "#/components/schemas/HardwareAction",
+                  "run_force": "#/components/schemas/RunForceAction",
+                  "scroll": "#/components/schemas/ScrollAction",
+                  "set": "#/components/schemas/SetAction"
+                }
+              }
+            },
+            "type": "object",
+            "title": "Confirm",
+            "description": "arm on it -> remembering its board (not remembered yet)"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "tty",
+          "board",
+          "serial",
+          "roles",
+          "assign",
+          "confirm"
+        ],
+        "title": "Tty",
+        "description": "A port plugged in, and what can be done with it (the server works the values out)."
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "Variable": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "set": {
+            "type": "boolean",
+            "title": "Set"
+          },
+          "secret": {
+            "type": "boolean",
+            "title": "Secret"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note",
+            "description": "a service's credential variable: which login the commands use"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name",
+          "set",
+          "secret",
+          "value",
+          "note"
+        ],
+        "title": "Variable",
+        "description": "An environment variable the commands get. A secret's value is never sent."
+      }
+    }
+  }
+}

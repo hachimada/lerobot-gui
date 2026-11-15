@@ -1,0 +1,17 @@
+__pycache__/
+*.py[oc]
+.venv/
+build/
+dist/
+*.egg-info
+node_modules/
+.ruff_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# the frontend build (npm run build in frontend/)
+src/lerobot_gui/web/
+
+# lerobot writes here when the GUI is started in this directory
+/outputs/

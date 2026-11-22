@@ -5,6 +5,7 @@ import { fmtDuration } from '../lib/format';
 import { withLinks } from '../lib/rich';
 import { useStore } from '../lib/store';
 import type { Term } from '../lib/term';
+import { useEnterKey } from '../hooks/useEnterKey';
 import { useNow } from '../hooks/useInterval';
 import { input, jobs, signal } from '../state/jobs';
 import { Alerts, type AlertItem } from './Alerts';
@@ -79,6 +80,7 @@ export function TerminalCard({ page }: { page: string }) {
     }
     void input(page, value);
   };
+  useEnterKey(running, () => send(''));
 
   const notes: AlertItem[] = [];
   if (prompt?.warning) notes.push({ level: 'err', text: prompt.warning });
@@ -140,7 +142,14 @@ export function TerminalCard({ page }: { page: string }) {
         >
           Send
         </button>
-        <button className="btn ghost small" type="button" disabled={!running} title="Send an empty line (Enter)" onClick={() => send('')}>
+        <button
+          className="btn ghost small"
+          type="button"
+          disabled={!running}
+          title="Send an empty line (Enter key)"
+          aria-keyshortcuts="Enter"
+          onClick={() => send('')}
+        >
           <Icon name="enter" />
           Enter
         </button>

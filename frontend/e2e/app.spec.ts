@@ -78,7 +78,9 @@ test('Find port: unplug, Enter, assign', async ({ page }) => {
   const card = page.locator('#findport-card');
   await card.getByRole('button', { name: 'Find port' }).click();
   await expect(card.getByText('Unplug the USB cable of one arm (only one).')).toBeVisible();
-  await card.getByRole('button', { name: 'Enter' }).click();
+  // the Enter key does what its Enter button does
+  await expect(card.getByRole('button', { name: 'Enter' })).toBeEnabled();
+  await page.keyboard.press('Enter');
   // the fake reports /dev/ttyACM1
   await expect(card.getByText('/dev/ttyACM1', { exact: true })).toBeVisible();
   // the board's serial, as the server read it from sysfs

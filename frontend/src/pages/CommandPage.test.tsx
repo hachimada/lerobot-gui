@@ -108,6 +108,24 @@ describe('CommandPage', () => {
     await waitFor(() => expect(calls.find((c) => c.path === '/api/jobs/j1/input')!.body).toEqual({ text: 'c' }));
   });
 
+  it('sends an empty line on the Enter key while it runs, unless a field has the focus', async () => {
+    const calls = mockApi({ 'POST /api/form/teleoperate': form(60), 'POST /api/jobs/j1/input': { ok: true } });
+    const { attach } = await import('../state/jobs');
+    act(() => attach(info()));
+    render(<CommandPage meta={meta} />);
+    const sent = () => calls.filter((c) => c.path === '/api/jobs/j1/input').map((c) => c.body);
+    expect(await screen.findByRole('button', { name: 'Enter' })).toHaveAttribute('aria-keyshortcuts', 'Enter');
+    fireEvent.keyDown(document.body, { key: 'Enter' });
+    await waitFor(() => expect(sent()).toEqual([{ text: '' }]));
+    // Enter in a field is that field's
+    fireEvent.keyDown(await screen.findByLabelText('Loop rate (Hz)'), { key: 'Enter' });
+    expect(sent()).toHaveLength(1);
+    // once it ended, the key sends nothing
+    act(() => attach(info({ running: false, returncode: 0, ended: Date.now() / 1000 })));
+    fireEvent.keyDown(document.body, { key: 'Enter' });
+    expect(sent()).toHaveLength(1);
+  });
+
   it('blocks Run while another robot command runs', async () => {
     mockApi({ 'POST /api/form/teleoperate': form(60) });
     const { attach } = await import('../state/jobs');

@@ -3,6 +3,7 @@ import { Alerts } from '../../components/Alerts';
 import { Card, StepTitle } from '../../components/Card';
 import { Icon } from '../../components/Icon';
 import { TermView } from '../../components/Terminal';
+import { useEnterKey } from '../../hooks/useEnterKey';
 import { basename, clock } from '../../lib/format';
 import { Rich } from '../../lib/rich';
 import { useStore } from '../../lib/store';
@@ -37,6 +38,7 @@ export function FindPortCard({ view }: { view: HardwareView }) {
   const entry = useStore(jobs, (s) => s.byPage['find-port']);
   const busy = useStore(jobs, () => busyWith('find-port'));
   const st = findPortState(entry);
+  useEnterKey(st === 'unplug', () => void input('find-port', ''));
   const start = (label: string) => (
     <button
       className="btn primary small"
@@ -55,9 +57,16 @@ export function FindPortCard({ view }: { view: HardwareView }) {
     body = (
       <>
         <Step n={1} text={st === 'scan' ? 'Reading the ports…' : 'Unplug the USB cable of one arm (only one).'} active={st === 'unplug'} />
-        <Step n={2} text="Click Enter." active={false} />
+        <Step n={2} text="Click Enter (or press the Enter key)." active={false} />
         <div className="run-bar" style={{ marginTop: 12 }}>
-          <button className="btn primary small" type="button" disabled={st !== 'unplug'} onClick={() => void input('find-port', '')}>
+          <button
+            className="btn primary small"
+            type="button"
+            disabled={st !== 'unplug'}
+            title="Or press the Enter key"
+            aria-keyshortcuts="Enter"
+            onClick={() => void input('find-port', '')}
+          >
             <Icon name="enter" />
             Enter
           </button>

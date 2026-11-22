@@ -3,8 +3,8 @@
 ## First steps
 
 1. **Hardware**
-   - *Find port* finds each arm's port (unplug it when asked); *Use as follower* / *Use as leader*
-     assigns it.
+   - *Find port* finds each arm's port (unplug it when asked, then *Enter* or the Enter key);
+     *Use as follower* / *Use as leader* assigns it.
    - *Follower & leader*: each arm's port and calibration id. *Check arms* reads the calibration
      stored in the motors (nothing moves) to catch swapped ports, and remembers each arm's USB
      board so a renumbering after replugging is caught.
@@ -28,8 +28,9 @@ exceptions: Train's *Resume* adds `--resume=true`, and Record's *Add to an exist
 the Dataset folder empty writes that dataset's local folder (shown as `auto: …`). Each page has the
 common flags as fields and every other `--help` option under *All options*.
 
-*Run* starts the command with its output and an input line for lerobot's prompts. One robot command
-runs at a time; training can run next to it.
+*Run* starts the command with its output and an input line for lerobot's prompts. *Enter* sends an
+empty line, which is what most of them wait for; the Enter key does the same while no field or
+button has the focus. One robot command runs at a time; training can run next to it.
 
 Run is blocked only by malformed input (number, JSON), flags lerobot marks as required, and the
 Hardware checks (a port not set, an arm renumbered after replugging, swapped arms). Everything else
